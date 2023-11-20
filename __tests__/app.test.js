@@ -3,6 +3,7 @@ const app = require("../app");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data");
+const apiEndpoints = require("../endpoints.json");
 
 beforeAll(() => seed(data));
 afterAll(() => db.end());
@@ -18,6 +19,17 @@ describe("/api/topics", () => {
                     expect(topic.slug).toEqual(expect.any(String));
                     expect(topic.description).toEqual(expect.any(String));
                 });
+            });
+    });
+});
+
+describe("/api", () => {
+    test("GET:200 responds with an object describing all available endpoints for this API. The object includes a description, a queries array and an example response", () => {
+        return request(app)
+            .get("/api/")
+            .expect(200)
+            .then(({ body: enpointsObject }) => {
+                expect(enpointsObject).toEqual(apiEndpoints);
             });
     });
 });

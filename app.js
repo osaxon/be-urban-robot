@@ -5,10 +5,12 @@ const {
     customErrorHandler,
     psqlErrorHandler,
 } = require("./controllers/error-handlers");
+const { getEndpoints } = require("./controllers/api.controllers");
 
 const app = express();
 
 app.get("/api/topics", getTopics);
+app.get("/api", getEndpoints);
 
 app.get("/api/articles/:article_id", getArticleByID);
 
