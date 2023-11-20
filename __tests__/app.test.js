@@ -3,6 +3,7 @@ const app = require("../app");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data");
+const apiEndpoints = require("../endpoints.json");
 
 beforeAll(() => seed(data));
 afterAll(() => db.end());
@@ -28,28 +29,7 @@ describe("/api", () => {
             .get("/api/")
             .expect(200)
             .then(({ body: enpointsObject }) => {
-                const validPaths = [
-                    "GET /api",
-                    "GET /api/topics",
-                    "GET /api/articles",
-                    // TODO update as routes are defined
-                ];
-                const paths = Object.keys(enpointsObject);
-                expect(paths).toEqual(validPaths);
-                validPaths.forEach((path) => {
-                    expect(enpointsObject[path].description).toEqual(
-                        expect.any(String)
-                    );
-                    // API endpoint does not have queries or example response
-                    if (path !== "GET /api") {
-                        expect(enpointsObject[path].queries).toEqual(
-                            expect.any(Array)
-                        );
-                        expect(enpointsObject[path].exampleResponse).toEqual(
-                            expect.any(Object)
-                        );
-                    }
-                });
+                expect(enpointsObject).toEqual(apiEndpoints);
             });
     });
 });
