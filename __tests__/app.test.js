@@ -79,6 +79,10 @@ describe("/api/articles", () => {
             .expect(200)
             .then(({ body }) => {
                 const { articles } = body;
+                expect(articles).toHaveLength(13);
+                expect(articles).toBeSortedBy("created_at", {
+                    descending: true,
+                });
                 articles.forEach((article) => {
                     expect(article.author).toEqual(expect.any(String));
                     expect(article.title).toEqual(expect.any(String));

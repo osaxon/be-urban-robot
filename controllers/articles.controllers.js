@@ -6,6 +6,7 @@ const {
 exports.getArticles = (req, res, next) => {
     selectArticles()
         .then((articles) => {
+            console.log(articles, "<--- the articles");
             res.status(200).send({ articles });
         })
         .catch(next);
