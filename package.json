@@ -8,6 +8,7 @@
         "seed": "node ./db/seeds/run-seed.js",
         "dev": "nodemon listen.js",
         "test": "jest",
+        "test-app": "jest app.test.js",
         "prepare": "husky install"
     },
     "repository": {
