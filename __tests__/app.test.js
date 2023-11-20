@@ -21,3 +21,24 @@ describe("/api/topics", () => {
             });
     });
 });
+
+describe("/api/articles", () => {
+    test("GET:200 responds with an array of all articles sorted sorted by date in descending order.", () => {
+        return request(app)
+            .get("/api/articles")
+            .expect(200)
+            .then(({ body }) => {
+                const { articles } = body;
+                articles.forEach((article) => {
+                    expect(article.author).toEqual(expect.any(String));
+                    expect(article.title).toEqual(expect.any(String));
+                    expect(article.article_id).toEqual(expect.any(Number));
+                    expect(article.topic).toEqual(expect.any(String));
+                    expect(article.created_at).toEqual(expect.any(String));
+                    expect(article.votes).toEqual(expect.any(Number));
+                    expect(article.article_img_url).toEqual(expect.any(String));
+                    expect(article.comment_count).toEqual(expect.any(Number));
+                });
+            });
+    });
+});
