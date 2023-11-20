@@ -6,5 +6,8 @@ exports.getArticleByID = (req, res, next) => {
         .then((article) => {
             res.status(200).send(article);
         })
-        .catch((error) => next(error));
+        .catch((error) => {
+            console.log(error, "<--- the error");
+            next(error);
+        });
 };
