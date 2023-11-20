@@ -23,7 +23,33 @@ describe("/api/topics", () => {
 });
 
 describe("/api", () => {
-    test("GET:200 responds with an object describing all available endpoints for this API", () => {
-        
-    })
-})
+    test("GET:200 responds with an object describing all available endpoints for this API. The object includes a description, a queries array and an example response", () => {
+        return request(app)
+            .get("/api/")
+            .expect(200)
+            .then(({ body: enpointsObject }) => {
+                const validPaths = [
+                    "GET /api",
+                    "GET /api/topics",
+                    "GET /api/articles",
+                    // TODO update as routes are defined
+                ];
+                const paths = Object.keys(enpointsObject);
+                expect(paths).toEqual(validPaths);
+                validPaths.forEach((path) => {
+                    expect(enpointsObject[path].description).toEqual(
+                        expect.any(String)
+                    );
+                    // API endpoint does not have queries or example response
+                    if (path !== "GET /api") {
+                        expect(enpointsObject[path].queries).toEqual(
+                            expect.any(Array)
+                        );
+                        expect(enpointsObject[path].exampleResponse).toEqual(
+                            expect.any(Object)
+                        );
+                    }
+                });
+            });
+    });
+});
