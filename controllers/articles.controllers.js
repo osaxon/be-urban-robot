@@ -4,7 +4,6 @@ const {
 } = require("../models/articles.models");
 
 exports.getArticles = (req, res, next) => {
-    console.log("get articles controller");
     selectArticles()
         .then((articles) => {
             res.status(200).send({ articles });
@@ -18,8 +17,5 @@ exports.getArticleByID = (req, res, next) => {
         .then((article) => {
             res.status(200).send(article);
         })
-        .catch((error) => {
-            console.log(error, "<--- the error");
-            next(error);
-        });
+        .catch(next);
 };
