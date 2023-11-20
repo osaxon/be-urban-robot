@@ -21,3 +21,9 @@ describe("/api/topics", () => {
             });
     });
 });
+
+describe("/api", () => {
+    test("GET:200 responds with an object describing all available endpoints for this API", () => {
+        
+    })
+})
