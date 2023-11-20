@@ -96,3 +96,26 @@ describe("/api/articles", () => {
             });
     });
 });
+
+describe("api/articles/:article_id/comments", () => {
+    test("GET:200 responds with an array of comment objects for the given article_id. The comment objects have the correct properties and are sent with the most recent comment first.", () => {
+        return request(app)
+            .get("/api/articles/1/comments")
+            .expect(200)
+            .then(({ body }) => {
+                const { comments } = body;
+                expect(comments).toHaveLength(11);
+                expect(comments).toBeSortedBy("created_at", {
+                    descending: true,
+                });
+                comments.forEach((comment) => {
+                    expect(comment.comment_id).toEqual(expect.any(Number));
+                    expect(comment.votes).toEqual(expect.any(Number));
+                    expect(comment.created_at).toEqual(expect.any(String));
+                    expect(comment.author).toEqual(expect.any(String));
+                    expect(comment.body).toEqual(expect.any(String));
+                    expect(comment.article_id).toEqual(expect.any(Number));
+                });
+            });
+    });
+});
