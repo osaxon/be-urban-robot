@@ -134,4 +134,74 @@ describe("api/articles/:article_id/comments", () => {
                 expect(response.body.msg).toBe("bad request");
             });
     });
+    test("POST:201 inserts a new comment to the db with the given article_id and responds with the new comment", () => {
+        const newComment = {
+            username: "lurker",
+            body: "your mum...",
+        };
+        return request(app)
+            .post("/api/articles/2/comments")
+            .send(newComment)
+            .expect(201)
+            .then(({ body }) => {
+                const { comment } = body;
+                expect(comment.article_id).toBe(2);
+                expect(comment.body).toBe(newComment.body);
+                expect(comment.author).toBe(newComment.username);
+            });
+    });
+    test("POST:404 responds with a suitable message and status when given an article_id which does not exist", () => {
+        const newComment = {
+            username: "lurker",
+            body: "lmao this is funny lololol xoxo",
+        };
+        return request(app)
+            .post("/api/articles/99/comments")
+            .send(newComment)
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("article_id not found");
+            });
+    });
+    test("POST:404 responds with a suitable message and status when the username in the body of the message does not exist", () => {
+        const newComment = {
+            username: "oli_2023",
+            body: "heyy hey",
+        };
+        return request(app)
+            .post("/api/articles/2/comments")
+            .send(newComment)
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("username not found");
+            });
+    });
+    test("POST:400 responds with a suitable message and status when the request body is invalid", () => {
+        const newComment = {
+            user: "lurker",
+            comment: "wtf m8 what is this!?",
+        };
+        return request(app)
+            .post("/api/articles/2/comments")
+            .send(newComment)
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe(
+                    "bad request - invalid parameters for comment body"
+                );
+            });
+    });
+    test("POST:400 responds with a suitable message and status when the article_id is invalid", () => {
+        const newComment = {
+            username: "lurker",
+            body: "whatsupppp",
+        };
+        return request(app)
+            .post("/api/articles/article-1/comments")
+            .send(newComment)
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("bad request");
+            });
+    });
 });
