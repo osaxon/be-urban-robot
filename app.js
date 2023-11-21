@@ -10,7 +10,10 @@ const {
     getArticleByID,
     getArticleComments,
 } = require("./controllers/articles.controllers");
-const { postComment } = require("./controllers/comments.controllers");
+const {
+    postComment,
+    deleteCommentByID,
+} = require("./controllers/comments.controllers");
 
 const app = express();
 app.use(express.json());
@@ -22,6 +25,8 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleByID);
 app.get("/api/articles/:article_id/comments", getArticleComments);
 app.post("/api/articles/:article_id/comments", postComment);
+
+app.delete("/api/comments/:comment_id", deleteCommentByID);
 
 app.use(psqlErrorHandler);
 app.use(customErrorHandler);

@@ -129,10 +129,8 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
                     ]
                 )
             );
-            console.log("db seeded 🌱");
             return db.query(insertCommentsQueryStr);
-        })
-        .catch((error) => console.log(error, "<--- error"));
+        });
 };
 
 module.exports = seed;
