@@ -134,4 +134,20 @@ describe("api/articles/:article_id/comments", () => {
                 expect(response.body.msg).toBe("bad request");
             });
     });
+    test("POST:201 inserts a new comment to the db with the given article_id and responds with the new comment", () => {
+        const newComment = {
+            username: "lurker",
+            body: "your mum...",
+        };
+        return request(app)
+            .post("/api/articles/2/comments")
+            .send(newComment)
+            .expect(201)
+            .then(({ body }) => {
+                const { comment } = body;
+                expect(comment.article_id).toBe(2);
+                expect(comment.body).toBe(newComment.body);
+                expect(comment.author).toBe(newComment.username);
+            });
+    });
 });
