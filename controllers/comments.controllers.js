@@ -4,6 +4,14 @@ const { checkExists } = require("../models/utils");
 exports.postComment = (req, res, next) => {
     const { article_id } = req.params;
     const { username, body } = req.body;
+
+    if (!username || !body) {
+        next({
+            status: 400,
+            message: "bad request - invalid parameters for comment body",
+        });
+    }
+
     const newComment = {
         article_id,
         author: username,
