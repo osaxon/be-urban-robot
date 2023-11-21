@@ -45,3 +45,14 @@ exports.selectArticleComments = (id) => {
             return rows;
         });
 };
+
+exports.updateArticle = ({ id, newVotes }) => {
+    return db
+        .query(
+            `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *`,
+            [newVotes.inc_votes, id]
+        )
+        .then(({ rows }) => {
+            return rows[0];
+        });
+};
