@@ -205,3 +205,19 @@ describe("api/articles/:article_id/comments", () => {
             });
     });
 });
+
+describe("/api/users", () => {
+    test("GET:200 sends an array of user objects with username, name and avatar_url properties", () => {
+        return request(app)
+            .get("/api/users")
+            .expect(200)
+            .then(({ body }) => {
+                const { users } = body;
+                users.forEach((user) => {
+                    expect(user.username).toEqual(expect.any(String));
+                    expect(user.name).toEqual(expect.any(String));
+                    expect(user.avatar_url).toEqual(expect.any(String));
+                });
+            });
+    });
+});
