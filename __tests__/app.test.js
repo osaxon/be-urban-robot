@@ -191,4 +191,17 @@ describe("api/articles/:article_id/comments", () => {
                 );
             });
     });
+    test("POST:400 responds with a suitable message and status when the article_id is invalid", () => {
+        const newComment = {
+            username: "lurker",
+            body: "whatsupppp",
+        };
+        return request(app)
+            .post("/api/articles/article-1/comments")
+            .send(newComment)
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("bad request");
+            });
+    });
 });
