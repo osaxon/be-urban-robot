@@ -205,3 +205,30 @@ describe("api/articles/:article_id/comments", () => {
             });
     });
 });
+
+describe("/api/comments/:comment_id", () => {
+    test("DELETE:204 responds with a suitable status code and no content", () => {
+        return request(app)
+            .delete("/api/comments/10")
+            .expect(204)
+            .then(({ body }) => {
+                expect(body).toEqual({});
+            });
+    });
+    test("DELETE:400 responds with a suitable error if given an invalid comment_id", () => {
+        return request(app)
+            .delete("/api/comments/my-comment")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toEqual("bad request");
+            });
+    });
+    test("DELETE:404 responds with a suitable error if given a valid but non-existent comment_id", () => {
+        return request(app)
+            .delete("/api/comments/150")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toEqual("comment_id not found");
+            });
+    });
+});
