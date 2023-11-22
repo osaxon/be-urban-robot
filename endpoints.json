@@ -4,7 +4,9 @@
     },
     "GET /api/topics": {
         "description": "serves an array of all topics",
-        "queries": [],
+        "queries": [
+            "topic"
+        ],
         "exampleResponse": {
             "topics": [
                 {
@@ -65,6 +67,11 @@
             "created_at": "2020-07-09T20: 11: 00.000Z",
             "article_id": 2
         }
+    },
+    "DELETE /api/comments/:comment_id": {
+        "description": "deletes the comment passed as params. does not return any content",
+        "queries": [],
+        "exampleResponse": {}
     },
     "GET /api/users": {
         "description": "serves an array of all users",

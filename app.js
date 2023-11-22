@@ -10,7 +10,10 @@ const {
     getArticleByID,
     getArticleComments,
 } = require("./controllers/articles.controllers");
-const { postComment } = require("./controllers/comments.controllers");
+const {
+    postComment,
+    deleteCommentByID,
+} = require("./controllers/comments.controllers");
 const { userRoutes } = require("./routes");
 
 const app = express();
@@ -25,6 +28,8 @@ app.get("/api/articles/:article_id/comments", getArticleComments);
 app.post("/api/articles/:article_id/comments", postComment);
 
 app.use("/api/users", userRoutes);
+
+app.delete("/api/comments/:comment_id", deleteCommentByID);
 
 app.use(psqlErrorHandler);
 app.use(customErrorHandler);
