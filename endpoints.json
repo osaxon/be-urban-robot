@@ -66,6 +66,11 @@
             "article_id": 2
         }
     },
+    "DELETE /api/comments/:comment_id": {
+        "description": "deletes the comment passed as params. does not return any content",
+        "queries": [],
+        "exampleResponse": {}
+    },
     "PATCH /api/articles/:article_id": {
         "description": "updates an article in the database and responds with the updated artcile. accepts an object in the form of { inc_votes: X } where X is a whole number, by which the article.votes is updated. X can be a positive or negative number.",
         "queries": [],
