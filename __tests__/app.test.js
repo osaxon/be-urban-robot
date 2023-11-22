@@ -97,6 +97,37 @@ describe("/api/articles", () => {
     });
 });
 
+describe("/api/articles?topic=", () => {
+    test("GET:200 responds with a filtered array of articles whose topic matches the query parameter", () => {
+        return request(app)
+            .get("/api/articles?topic=mitch")
+            .expect(200)
+            .then(({ body }) => {
+                const { articles } = body;
+                expect(articles).toHaveLength(12);
+                articles.forEach(({ topic }) => expect(topic).toBe("mitch"));
+            });
+    });
+    test("GET:200 responds with an empty array when given a topic which exists but no articles associated with the given topic", () => {
+        return request(app)
+            .get("/api/articles?topic=paper")
+            .expect(200)
+            .then(({ body }) => {
+                const { articles } = body;
+                expect(articles).toHaveLength(0);
+                expect(articles).toEqual([]);
+            });
+    });
+    test("GET:404 responds a suitable error when given a valid but non-existent topic", () => {
+        return request(app)
+            .get("/api/articles?topic=cooking")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("slug not found");
+            });
+    });
+});
+
 describe("api/articles/:article_id/comments", () => {
     test("GET:200 responds with an array of comment objects for the given article_id. The comment objects have the correct properties and are sent with the most recent comment first.", () => {
         return request(app)
