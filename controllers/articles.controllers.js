@@ -3,10 +3,20 @@ const {
     selectArticleByID,
     selectArticleComments,
 } = require("../models/articles.models");
+const { checkExists } = require("../models/utils");
 
 exports.getArticles = (req, res, next) => {
-    selectArticles()
-        .then((articles) => {
+    const articlePromises = [];
+    const { topic } = req.query;
+
+    articlePromises.push(selectArticles(topic));
+
+    if (topic) {
+        articlePromises.push(checkExists("topics", "slug", topic));
+    }
+
+    Promise.all(articlePromises)
+        .then(([articles, topicCheck]) => {
             res.status(200).send({ articles });
         })
         .catch(next);
