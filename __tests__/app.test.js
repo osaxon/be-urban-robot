@@ -108,6 +108,16 @@ describe("/api/articles?topic=", () => {
                 articles.forEach(({ topic }) => expect(topic).toBe("mitch"));
             });
     });
+    test("GET:200 responds with an empty array when given a topic which exists but no articles associated with the given topic", () => {
+        return request(app)
+            .get("/api/articles?topic=paper")
+            .expect(200)
+            .then(({ body }) => {
+                const { articles } = body;
+                expect(articles).toHaveLength(0);
+                expect(articles).toEqual([]);
+            });
+    });
     test("GET:404 responds a suitable error when given a valid but non-existent topic", () => {
         return request(app)
             .get("/api/articles?topic=cooking")
