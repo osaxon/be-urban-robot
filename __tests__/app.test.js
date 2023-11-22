@@ -54,6 +54,14 @@ describe("/api/articles/:article_id", () => {
                 );
             });
     });
+    test("the article object has a comment_count property which is the total comments related to the article", () => {
+        return request(app)
+            .get("/api/articles/1")
+            .expect(200)
+            .then(({ body: article }) => {
+                expect(article.comment_count).toBe(11);
+            });
+    });
     test("GET:404 responds with an appropriate status and error message when given a valid but non-existent article_id", () => {
         return request(app)
             .get("/api/articles/69")
