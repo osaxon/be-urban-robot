@@ -106,7 +106,7 @@ describe("/api/articles/:article_id", () => {
     });
     test("PATCH:400 responds with a suitable error when given an invalid newVotes object", () => {
         return request(app)
-            .patch("/api/articles/top-10-spider-facts")
+            .patch("/api/articles/5")
             .send({ inc_votes: "two" })
             .expect(400)
             .then((response) => {
