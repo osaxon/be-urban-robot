@@ -413,4 +413,31 @@ describe("/api/comments/:comment_id", () => {
                     });
             });
     });
+    test("PATCH:404 responds with a suitable error when given a valid but non-existent comment_id", () => {
+        return request(app)
+            .patch("/api/comments/101")
+            .send({ inc_votes: 1 })
+            .expect(404)
+            .then((response) => {
+                expect(response.body.msg).toBe("comment_id not found");
+            });
+    });
+    test("PATCH:400 responds with a suitable error when given an invalid comment_id", () => {
+        return request(app)
+            .patch("/api/comments/my-comment")
+            .send({ inc_votes: 2 })
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe("bad request");
+            });
+    });
+    test("PATCH:400 responds with a suitable error when given an invalid newVotes object", () => {
+        return request(app)
+            .patch("/api/comments/5")
+            .send({ inc_votes: "two" })
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe("bad request");
+            });
+    });
 });
