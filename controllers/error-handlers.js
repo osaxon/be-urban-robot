@@ -2,6 +2,7 @@ exports.psqlErrorHandler = (err, req, res, next) => {
     switch (err.code) {
         case "23502":
         case "22P02":
+        case "42703":
             res.status(400).send({ msg: "bad request" });
         default:
             next(err);

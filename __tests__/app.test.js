@@ -181,6 +181,46 @@ describe("/api/articles?topic=", () => {
     });
 });
 
+describe("/api/articles?sort_by=", () => {
+    test("GET:200 responds with an array of articles ordered by the given query column passed as query parameters", () => {
+        return request(app)
+            .get("/api/articles?sort_by=votes")
+            .expect(200)
+            .then(({ body }) => {
+                const { articles } = body;
+                expect(articles).toBeSortedBy("votes", { descending: true });
+            });
+    });
+    test("GET:404 responds a suitable error when given an invalid column to sort the table", () => {
+        return request(app)
+            .get("/api/articles?sort_by=dogs")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("bad request");
+            });
+    });
+});
+
+describe("/api/articles?order=", () => {
+    test("GET:200 responds with an array of articles ordered by created date in ascending order", () => {
+        return request(app)
+            .get("/api/articles?order=asc")
+            .expect(200)
+            .then(({ body }) => {
+                const { articles } = body;
+                expect(articles).toBeSortedBy("created_at");
+            });
+    });
+    test("GET:400 responds with a suitable error when given invalid order direction", () => {
+        return request(app)
+            .get("/api/articles?order=up")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("bad request");
+            });
+    });
+});
+
 describe("api/articles/:article_id/comments", () => {
     test("GET:200 responds with an array of comment objects for the given article_id. The comment objects have the correct properties and are sent with the most recent comment first.", () => {
         return request(app)

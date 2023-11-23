@@ -4,23 +4,35 @@ const {
     selectArticleComments,
     updateArticle,
 } = require("../models/articles.models");
-const { checkExists } = require("../models/utils");
+const { checkExists, checkColumnExists } = require("../models/utils");
 
 exports.getArticles = (req, res, next) => {
     const articlePromises = [];
-    const { topic } = req.query;
+    const queries = req.query;
 
-    articlePromises.push(selectArticles(topic));
+    articlePromises.push(selectArticles(queries));
 
-    if (topic) {
-        articlePromises.push(checkExists("topics", "slug", topic));
+    if (queries.topic) {
+        articlePromises.push(checkExists("topics", "slug", queries.topic));
+    }
+
+    if (queries.order) {
+        if (queries.order !== "desc" && queries.order !== "asc") {
+            next({
+                status: 400,
+                message: "bad request",
+            });
+        }
     }
 
     Promise.all(articlePromises)
         .then(([articles, topicCheck]) => {
             res.status(200).send({ articles });
         })
-        .catch(next);
+        .catch((error) => {
+            console.log(error, "<--- the error");
+            next(error);
+        });
 };
 
 exports.getArticleByID = (req, res, next) => {
