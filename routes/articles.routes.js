@@ -5,8 +5,8 @@ const {
     getArticleByID,
     getArticleComments,
     patchArticle,
-    postComment,
-} = require("../controllers");
+} = require("../controllers/articles.controllers");
+const { postComment } = require("../controllers/comments.controllers");
 
 router.get("/", getArticles);
 router.get("/:article_id", getArticleByID);

@@ -347,6 +347,21 @@ describe("/api/users", () => {
     });
 });
 
+describe("/api/users/:username", () => {
+    test("GET:200 sends a single user matching the given username from params", () => {
+        return request(app)
+            .get("/api/users/lurker")
+            .expect(200)
+            .then(({ body: user }) => {
+                expect(user.username).toBe("lurker");
+                expect(user.name).toBe("do_nothing");
+                expect(user.avatar_url).toBe(
+                    "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+                );
+            });
+    });
+});
+
 describe("/api/comments/:comment_id", () => {
     test("DELETE:204 responds with a suitable status code and no content", () => {
         return request(app)
