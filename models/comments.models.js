@@ -17,3 +17,14 @@ exports.deleteComment = (id) => {
         .query(`DELETE FROM comments WHERE comment_id = $1`, [id])
         .then(() => "comment deleted");
 };
+
+exports.updateComment = (id, incVotes) => {
+    return db
+        .query(
+            `UPDATE comments SET votes = votes + $1 WHERE comment_id = $2 RETURNING *`,
+            [incVotes, id]
+        )
+        .then(({ rows: [comment] }) => {
+            return comment;
+        });
+};

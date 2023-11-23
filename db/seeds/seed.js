@@ -9,7 +9,7 @@ const {
 const seed = ({ topicData, userData, articleData, commentData }) => {
     return db
         .query(`DROP TABLE IF EXISTS comments;`)
-        .then(() => {
+        .then((data) => {
             return db.query(`DROP TABLE IF EXISTS articles;`);
         })
         .then(() => {

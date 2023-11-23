@@ -1,4 +1,8 @@
-const { insertComment, deleteComment } = require("../models/comments.models");
+const {
+    insertComment,
+    deleteComment,
+    updateComment,
+} = require("../models/comments.models");
 const { checkExists } = require("../models/utils");
 
 exports.postComment = (req, res, next) => {
@@ -37,6 +41,21 @@ exports.deleteCommentByID = (req, res, next) => {
     ])
         .then(() => {
             res.status(204).send();
+        })
+        .catch(next);
+};
+
+exports.patchComment = (req, res, next) => {
+    const { comment_id } = req.params;
+    const { inc_votes } = req.body;
+    console.log("patch comment controller");
+
+    Promise.all([
+        checkExists("comments", "comment_id", comment_id),
+        updateComment(comment_id, inc_votes),
+    ])
+        .then(([idCheck, comment]) => {
+            res.status(200).send({ comment });
         })
         .catch(next);
 };

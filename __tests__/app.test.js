@@ -395,4 +395,22 @@ describe("/api/comments/:comment_id", () => {
                 expect(body.msg).toEqual("comment_id not found");
             });
     });
+    test("PATCH:200 updates the votes on a comment and returns the updated comment", () => {
+        return request(app)
+            .patch("/api/comments/17")
+            .send({ inc_votes: 1 })
+            .expect(200)
+            .then((addOneResponse) => {
+                return request(app)
+                    .patch("/api/comments/17")
+                    .send({ inc_votes: 1 })
+                    .expect(200)
+                    .then((addAnotherOneResponse) => {
+                        expect(addOneResponse.body.comment.votes).toBe(21);
+                        expect(addAnotherOneResponse.body.comment.votes).toBe(
+                            22
+                        );
+                    });
+            });
+    });
 });
