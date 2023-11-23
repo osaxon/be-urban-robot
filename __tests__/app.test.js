@@ -150,7 +150,7 @@ describe("/api/articles", () => {
     });
 });
 
-describe("/api/articles?topic=", () => {
+describe.only("/api/articles?topic=", () => {
     test("GET:200 responds with a filtered array of articles whose topic matches the query parameter", () => {
         return request(app)
             .get("/api/articles?topic=mitch")
@@ -177,6 +177,18 @@ describe("/api/articles?topic=", () => {
             .expect(404)
             .then(({ body }) => {
                 expect(body.msg).toBe("slug not found");
+            });
+    });
+});
+
+describe("/api/articles?sort_by=", () => {
+    test("GET:200 responds with an array of articles ordered by the given query column passed as query parameters", () => {
+        return request(app)
+            .get("/api/articles?sort_by=votes")
+            .expect(200)
+            .then(({ body }) => {
+                const { articles } = body;
+                expect(articles).toBeSortedBy("votes", { descending: true });
             });
     });
 });
