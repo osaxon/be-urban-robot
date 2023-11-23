@@ -360,6 +360,14 @@ describe("/api/users/:username", () => {
                 );
             });
     });
+    test("GET:404 sends a suitable error when given a valid but non-existent user", () => {
+        return request(app)
+            .get("/api/users/olisax")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("user not found");
+            });
+    });
 });
 
 describe("/api/comments/:comment_id", () => {

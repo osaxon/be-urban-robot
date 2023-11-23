@@ -80,8 +80,8 @@ Queries:
 
 - author (coming soon!)
 - topic
-- sort_by (coming soon!)
-- order (coming soon!)
+- sort_by
+- order
 
 Example Response:
 
