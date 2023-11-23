@@ -297,6 +297,7 @@ describe("/api/users", () => {
             .expect(200)
             .then(({ body }) => {
                 const { users } = body;
+                expect(users).toHaveLength(data.userData.length);
                 users.forEach((user) => {
                     expect(user.username).toEqual(expect.any(String));
                     expect(user.name).toEqual(expect.any(String));
