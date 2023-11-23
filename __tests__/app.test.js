@@ -54,6 +54,14 @@ describe("/api/articles/:article_id", () => {
                 );
             });
     });
+    test("the article object has a comment_count property which is the total comments related to the article", () => {
+        return request(app)
+            .get("/api/articles/1")
+            .expect(200)
+            .then(({ body: article }) => {
+                expect(article.comment_count).toBe(11);
+            });
+    });
     test("GET:404 responds with an appropriate status and error message when given a valid but non-existent article_id", () => {
         return request(app)
             .get("/api/articles/69")
@@ -68,6 +76,51 @@ describe("/api/articles/:article_id", () => {
             .expect(400)
             .then((response) => {
                 expect(response.body.msg).toBe("bad request");
+            });
+    });
+    test("PATCH:200 updates the given article votes in the database and responds with the updated article. the request body accepts an object with an inc_votes property which increments or decrements the vote count", () => {
+        return request(app)
+            .patch("/api/articles/5")
+            .send({ inc_votes: 10 })
+            .expect(200)
+            .then((addTenResponse) => {
+                return request(app)
+                    .patch("/api/articles/5")
+                    .send({ inc_votes: -5 })
+                    .expect(200)
+                    .then((subFiveResponse) => {
+                        expect(addTenResponse.body.article.votes).toBe(10);
+                        expect(subFiveResponse.body.article.votes).toBe(5);
+                    });
+            });
+    });
+    test("PATCH:404 responds with a suitable error when given a valid but non-existent article_id", () => {
+        return request(app)
+            .patch("/api/articles/101")
+            .send({ inc_votes: 25 })
+            .expect(404)
+            .then((response) => {
+                expect(response.body.msg).toBe("article_id not found");
+            });
+    });
+    test("PATCH:400 responds with a suitable error when given an invalid article_id", () => {
+        return request(app)
+            .patch("/api/articles/top-10-spider-facts")
+            .send({ inc_votes: 2 })
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe("bad request");
+            });
+    });
+    test("PATCH:400 responds with a suitable error when given an invalid newVotes object", () => {
+        return request(app)
+            .patch("/api/articles/5")
+            .send({ inc_votes: "two" })
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe(
+                    "bad request - invalid request body"
+                );
             });
     });
 });
