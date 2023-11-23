@@ -16,10 +16,6 @@ exports.getArticles = (req, res, next) => {
         articlePromises.push(checkExists("topics", "slug", queries.topic));
     }
 
-    if (queries.sort_by) {
-        articlePromises.push(checkColumnExists("articles", queries.sort_by));
-    }
-
     if (queries.order) {
         if (queries.order !== "desc" && queries.order !== "asc") {
             next({
@@ -30,10 +26,13 @@ exports.getArticles = (req, res, next) => {
     }
 
     Promise.all(articlePromises)
-        .then(([articles, topicCheck, sortByCheck]) => {
+        .then(([articles, topicCheck]) => {
             res.status(200).send({ articles });
         })
-        .catch(next);
+        .catch((error) => {
+            console.log(error, "<--- the error");
+            next(error);
+        });
 };
 
 exports.getArticleByID = (req, res, next) => {
