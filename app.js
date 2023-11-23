@@ -15,6 +15,7 @@ const {
     postComment,
     deleteCommentByID,
 } = require("./controllers/comments.controllers");
+const { userRoutes } = require("./routes");
 
 const app = express();
 app.use(express.json());
@@ -27,6 +28,8 @@ app.get("/api/articles/:article_id", getArticleByID);
 app.get("/api/articles/:article_id/comments", getArticleComments);
 app.post("/api/articles/:article_id/comments", postComment);
 app.patch("/api/articles/:article_id", patchArticle);
+
+app.use("/api/users", userRoutes);
 
 app.delete("/api/comments/:comment_id", deleteCommentByID);
 

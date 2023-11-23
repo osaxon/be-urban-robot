@@ -330,6 +330,23 @@ describe("api/articles/:article_id/comments", () => {
     });
 });
 
+describe("/api/users", () => {
+    test("GET:200 sends an array of user objects with username, name and avatar_url properties", () => {
+        return request(app)
+            .get("/api/users")
+            .expect(200)
+            .then(({ body }) => {
+                const { users } = body;
+                expect(users).toHaveLength(data.userData.length);
+                users.forEach((user) => {
+                    expect(user.username).toEqual(expect.any(String));
+                    expect(user.name).toEqual(expect.any(String));
+                    expect(user.avatar_url).toEqual(expect.any(String));
+                });
+            });
+    });
+});
+
 describe("/api/comments/:comment_id", () => {
     test("DELETE:204 responds with a suitable status code and no content", () => {
         return request(app)
