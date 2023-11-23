@@ -150,7 +150,7 @@ describe("/api/articles", () => {
     });
 });
 
-describe.only("/api/articles?topic=", () => {
+describe("/api/articles?topic=", () => {
     test("GET:200 responds with a filtered array of articles whose topic matches the query parameter", () => {
         return request(app)
             .get("/api/articles?topic=mitch")
