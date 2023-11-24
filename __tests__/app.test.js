@@ -204,6 +204,35 @@ describe("/api/articles", () => {
     });
 });
 
+describe("/api/articles?limit=X&p=Y", () => {
+    test("GET:200 returns an array of articles up to the limit specified as a query param. defaults to 10 articles", () => {
+        return request(app)
+            .get("/api/articles?limit=15")
+            .expect(200)
+            .then(({ body }) => {
+                const { articles } = body;
+                expect(articles).toHaveLength(15);
+            });
+    });
+    test("GET:200 defaults to 10 if no value is given to the limit query", () => {
+        return request(app)
+            .get("/api/articles?limit")
+            .expect(200)
+            .then(({ body }) => {
+                const { articles } = body;
+                expect(articles).toHaveLength(10);
+            });
+    });
+    test("GET:400 defaults to 10 if no value is given to the limit query", () => {
+        return request(app)
+            .get("/api/articles?limit=twelve")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("invalid limit value");
+            });
+    });
+});
+
 describe("/api/articles?topic=", () => {
     test("GET:200 responds with a filtered array of articles whose topic matches the query parameter", () => {
         return request(app)

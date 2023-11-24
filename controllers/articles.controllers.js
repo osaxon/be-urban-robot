@@ -9,7 +9,9 @@ const { checkExists } = require("../models/utils");
 
 exports.getArticles = (req, res, next) => {
     const articlePromises = [];
-    const queries = req.query;
+    let queries = req.query;
+
+    console.log(queries, "<--- the queries");
 
     articlePromises.push(selectArticles(queries));
 
@@ -30,10 +32,7 @@ exports.getArticles = (req, res, next) => {
         .then(([articles, topicCheck]) => {
             res.status(200).send({ articles });
         })
-        .catch((error) => {
-            console.log(error, "<--- the error");
-            next(error);
-        });
+        .catch(next);
 };
 
 exports.getArticleByID = (req, res, next) => {
@@ -96,8 +95,5 @@ exports.postArticle = (req, res, next) => {
         .then(([userIdCheck, topicCheck, article]) =>
             res.status(201).send({ article })
         )
-        .catch((error) => {
-            console.log(error);
-            next(error);
-        });
+        .catch(next);
 };

@@ -2,7 +2,7 @@ const db = require("../db/connection");
 const format = require("pg-format");
 
 exports.selectArticles = (queries) => {
-    const { topic, sort_by, order } = queries;
+    let { topic, sort_by, order, limit } = queries;
 
     let queryString = `SELECT articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id) AS comment_count FROM articles LEFT OUTER JOIN comments ON comments.article_id = articles.article_id `;
 
@@ -14,10 +14,29 @@ exports.selectArticles = (queries) => {
     }
 
     queryString += format(
-        `GROUP BY articles.author, articles.title, articles.article_id ORDER BY articles.%I %s;`,
+        `GROUP BY articles.author, articles.title, articles.article_id ORDER BY articles.%I %s`,
         sort_by ?? "created_at",
         order ?? "DESC"
     );
+
+    // checks if limit is passed as query and checks if the value can be converted to a number safely
+    if (Object.keys(queries).includes("limit")) {
+        // reject if passed a value that can't be converted to a number - helps prevent sql injection
+        if (isNaN(limit)) {
+            return Promise.reject({
+                status: 400,
+                message: "invalid limit value",
+            });
+        }
+        let limitQuery = ` LIMIT `;
+        if (!limit) {
+            limitQuery += "10";
+        } else if (!isNaN(limit)) {
+            limitQuery += `$${params.length + 1}`;
+            params.push(limit);
+        }
+        queryString += format(`%s`, limitQuery);
+    }
 
     return db.query(queryString, params).then(({ rows, rowCount }) => {
         return rows.map(({ comment_count, ...rest }) => ({
@@ -86,7 +105,6 @@ exports.createArticle = (article) => {
         Object.keys(articleWithMetaData),
         [Object.values(articleWithMetaData)]
     );
-    console.log(insertQuery, "<<<< -the query");
 
     return db.query(insertQuery).then(({ rows: [article] }) => {
         return {
