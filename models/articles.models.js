@@ -61,8 +61,6 @@ exports.selectArticles = (queries) => {
 
         queryString += format(`%s`, offsetQuery);
     }
-    console.log(queryString, "<--- query string");
-    console.log(params, "<--- the params");
     return db.query(queryString, params).then((response) => {
         const { rows, rowCount } = response;
         return rows.map(({ comment_count, ...rest }) => ({
