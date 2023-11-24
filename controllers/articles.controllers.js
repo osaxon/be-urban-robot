@@ -4,6 +4,7 @@ const {
     selectArticleComments,
     updateArticle,
     createArticle,
+    getTotalRowCount,
 } = require("../models/articles.models");
 const { checkExists } = require("../models/utils");
 
@@ -11,9 +12,8 @@ exports.getArticles = (req, res, next) => {
     const articlePromises = [];
     let queries = req.query;
 
-    console.log(queries, "<--- the queries");
-
     articlePromises.push(selectArticles(queries));
+    articlePromises.push(getTotalRowCount(queries));
 
     if (queries.topic) {
         articlePromises.push(checkExists("topics", "slug", queries.topic));
@@ -29,8 +29,8 @@ exports.getArticles = (req, res, next) => {
     }
 
     Promise.all(articlePromises)
-        .then(([articles, topicCheck]) => {
-            res.status(200).send({ articles });
+        .then(([articles, total_count, topicCheck]) => {
+            res.status(200).send({ articles, total_count });
         })
         .catch(next);
 };
