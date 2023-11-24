@@ -148,6 +148,60 @@ describe("/api/articles", () => {
                 });
             });
     });
+    test("POST:201 inserts a new article and responds with the newly added article which includes additional properties", () => {
+        const newArticle = {
+            author: "lurker",
+            title: "top 5 alien abductions of 2023",
+            body: "do you believe???",
+            topic: "cats",
+            article_img_url:
+                "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fvignette3.wikia.nocookie.net%2Faliens%2Fimages%2Fe%2Fec%2FCartmanGetsanAnalProbe23.png%2Frevision%2Flatest%3Fcb%3D20111105211802&f=1&nofb=1&ipt=dc8582097ce70a65eac8a98e743e6a5fe503c124e7850eb2b448b3ce9a68731b&ipo=images",
+        };
+        return request(app)
+            .post("/api/articles")
+            .send(newArticle)
+            .expect(201)
+            .then(({ body }) => {
+                const { article } = body;
+                expect(article.article_id).toBe(14);
+                expect(article.votes).toBe(0);
+                expect(article.created_at).toEqual(expect.any(String));
+                expect(article.comment_count).toBe(0);
+            });
+    });
+    test("POST:201 adds a default article image if a url isn't given", () => {
+        const newArticle = {
+            author: "lurker",
+            title: "top 5 alien abductions of 2023",
+            body: "do you believe???",
+            topic: "cats",
+        };
+        return request(app)
+            .post("/api/articles")
+            .send(newArticle)
+            .expect(201)
+            .then(({ body }) => {
+                const { article } = body;
+                expect(article.article_img_url).toBe(
+                    "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700"
+                );
+            });
+    });
+    test("POST:400 sends a suitable error when the article body is invalid", () => {
+        const newArticle = {
+            author: "lurker",
+            description: "top 5 alien abductions of 2023",
+            content: "do you believe???",
+            topic: "cats",
+        };
+        return request(app)
+            .post("/api/articles")
+            .send(newArticle)
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("bad request");
+            });
+    });
 });
 
 describe("/api/articles?topic=", () => {

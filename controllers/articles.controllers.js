@@ -3,8 +3,9 @@ const {
     selectArticleByID,
     selectArticleComments,
     updateArticle,
+    createArticle,
 } = require("../models/articles.models");
-const { checkExists, checkColumnExists } = require("../models/utils");
+const { checkExists } = require("../models/utils");
 
 exports.getArticles = (req, res, next) => {
     const articlePromises = [];
@@ -77,4 +78,26 @@ exports.patchArticle = (req, res, next) => {
             res.status(200).send({ article });
         })
         .catch(next);
+};
+
+exports.postArticle = (req, res, next) => {
+    const newArticle = req.body;
+    const { author, topic, title, body } = newArticle;
+
+    if (!title || !body || !author || !topic) {
+        return next({ status: 400, message: "bad request" });
+    }
+
+    Promise.all([
+        checkExists("users", "username", author),
+        checkExists("topics", "slug", topic),
+        createArticle(newArticle),
+    ])
+        .then(([userIdCheck, topicCheck, article]) =>
+            res.status(201).send({ article })
+        )
+        .catch((error) => {
+            console.log(error);
+            next(error);
+        });
 };
