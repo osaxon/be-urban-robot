@@ -38,6 +38,19 @@
             ]
         }
     },
+    "PORST /api/articles": {
+        "description": "inserts a new article to the database and responds with the newly added article + additional, auto-generated meta data fields",
+        "queries": [],
+        "exampleResponse": {
+            "title": "Seafood substitutions are increasing",
+            "topic": "cooking",
+            "author": "weegembump",
+            "body": "Text from the article..",
+            "created_at": "2018-05-30T15:59:13.341Z",
+            "votes": 0,
+            "comment_count": 6
+        }
+    },
     "GET /api/articles/:article_id": {
         "description": "serves a single article with the given id passed as params",
         "queries": [],
