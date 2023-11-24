@@ -204,6 +204,64 @@ describe("/api/articles", () => {
     });
 });
 
+describe("/api/articles?p=X&limit=Y", () => {
+    test("GET:200 returns an array of articles paginated to the defult limit of 10 articles per page", () => {
+        return request(app)
+            .get("/api/articles?p=1")
+            .expect(200)
+            .then(({ body }) => {
+                const { articles } = body;
+                expect(articles).toHaveLength(10);
+            });
+    });
+    test("GET:200 returns articles offset to the correct page", () => {
+        return request(app)
+            .get("/api/articles?p=2")
+            .expect(200)
+            .then(({ body }) => {
+                const { articles } = body;
+                // page 2 has 5 articles because the limit is 10 per page and 15 in total
+                expect(articles).toHaveLength(5);
+            });
+    });
+    test("GET:200 returns a total_count property which is the total number of articles discounting the limit", () => {
+        return request(app)
+            .get("/api/articles?p=1")
+            .expect(200)
+            .then(({ body }) => {
+                const { articles, total_count } = body;
+                expect(articles).toHaveLength(10);
+                expect(total_count).toBe("15");
+            });
+    });
+    test("GET:200 returns an array of articles up to the limit specified as a query param", () => {
+        return request(app)
+            .get("/api/articles?limit=5")
+            .expect(200)
+            .then(({ body }) => {
+                const { articles } = body;
+                expect(articles).toHaveLength(5);
+            });
+    });
+    test("GET:200 defaults to 10 if no value is given to the limit query", () => {
+        return request(app)
+            .get("/api/articles?limit")
+            .expect(200)
+            .then(({ body }) => {
+                const { articles } = body;
+                expect(articles).toHaveLength(10);
+            });
+    });
+    test("GET:400 defaults to 10 if no value is given to the limit query", () => {
+        return request(app)
+            .get("/api/articles?limit=twelve")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("invalid limit value");
+            });
+    });
+});
+
 describe("/api/articles?topic=", () => {
     test("GET:200 responds with a filtered array of articles whose topic matches the query parameter", () => {
         return request(app)

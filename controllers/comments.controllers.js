@@ -48,7 +48,6 @@ exports.deleteCommentByID = (req, res, next) => {
 exports.patchComment = (req, res, next) => {
     const { comment_id } = req.params;
     const { inc_votes } = req.body;
-    console.log("patch comment controller");
 
     Promise.all([
         checkExists("comments", "comment_id", comment_id),

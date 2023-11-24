@@ -4,14 +4,16 @@ const {
     selectArticleComments,
     updateArticle,
     createArticle,
+    getTotalRowCount,
 } = require("../models/articles.models");
 const { checkExists } = require("../models/utils");
 
 exports.getArticles = (req, res, next) => {
     const articlePromises = [];
-    const queries = req.query;
+    let queries = req.query;
 
     articlePromises.push(selectArticles(queries));
+    articlePromises.push(getTotalRowCount(queries));
 
     if (queries.topic) {
         articlePromises.push(checkExists("topics", "slug", queries.topic));
@@ -27,13 +29,10 @@ exports.getArticles = (req, res, next) => {
     }
 
     Promise.all(articlePromises)
-        .then(([articles, topicCheck]) => {
-            res.status(200).send({ articles });
+        .then(([articles, total_count, topicCheck]) => {
+            res.status(200).send({ articles, total_count });
         })
-        .catch((error) => {
-            console.log(error, "<--- the error");
-            next(error);
-        });
+        .catch(next);
 };
 
 exports.getArticleByID = (req, res, next) => {
@@ -96,8 +95,5 @@ exports.postArticle = (req, res, next) => {
         .then(([userIdCheck, topicCheck, article]) =>
             res.status(201).send({ article })
         )
-        .catch((error) => {
-            console.log(error);
-            next(error);
-        });
+        .catch(next);
 };
