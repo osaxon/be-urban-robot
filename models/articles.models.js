@@ -74,3 +74,24 @@ exports.updateArticle = ({ id, newVotes }) => {
             return rows[0];
         });
 };
+
+exports.createArticle = (article) => {
+    const articleWithMetaData = {
+        ...article,
+        votes: 0,
+    };
+
+    const insertQuery = format(
+        `INSERT INTO articles (%I) VALUES %L RETURNING articles.*, (SELECT COUNT(comments.article_id) FROM comments WHERE comments.article_id = articles.article_id) AS comment_count;`,
+        Object.keys(articleWithMetaData),
+        [Object.values(articleWithMetaData)]
+    );
+    console.log(insertQuery, "<<<< -the query");
+
+    return db.query(insertQuery).then(({ rows: [article] }) => {
+        return {
+            ...article,
+            comment_count: +article.comment_count,
+        };
+    });
+};
