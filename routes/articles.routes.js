@@ -6,6 +6,7 @@ const {
     getArticleComments,
     patchArticle,
     postArticle,
+    getNewCoverImage,
 } = require("../controllers/articles.controllers");
 const { postComment } = require("../controllers/comments.controllers");
 
