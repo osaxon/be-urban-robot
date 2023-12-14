@@ -15,7 +15,7 @@ exports.selectArticles = (queries) => {
     }
 
     queryString += format(
-        `GROUP BY articles.author, articles.title, articles.article_id ORDER BY articles.%I %s`,
+        `GROUP BY articles.author, articles.title, articles.article_id ORDER BY %I %s`,
         sort_by ?? "created_at",
         order ?? "DESC"
     );
