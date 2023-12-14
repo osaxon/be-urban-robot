@@ -11,12 +11,15 @@ const {
     commentRoutes,
     topicRoutes,
 } = require("./routes");
+const { getNewCoverImage } = require("./controllers/api.controllers");
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
 app.get("/api", getEndpoints);
+
+app.get("/api/cover", getNewCoverImage);
 
 app.use("/api/topics", topicRoutes);
 app.use("/api/articles", articleRoutes);
