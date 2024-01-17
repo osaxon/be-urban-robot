@@ -23,6 +23,27 @@ describe("/api/topics", () => {
     });
 });
 
+describe("/api/topics/:slug", () => {
+    test("GET:200 sends a single topic matching the given slug from params", () => {
+        return request(app)
+            .get("/api/topics/cats")
+            .expect(200)
+            .then(({ body }) => {
+                const { topic } = body;
+                expect(topic.slug).toBe("cats");
+                expect(topic.description).toBe("Not dogs");
+            });
+    });
+    test("GET:404 sends a suitable error when given a valid but non-existent slug", () => {
+        return request(app)
+            .get("/api/topics/soccer")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe("slug not found");
+            });
+    });
+});
+
 describe("/api", () => {
     test("GET:200 responds with an object describing all available endpoints for this API. The object includes a description, a queries array and an example response", () => {
         return request(app)
